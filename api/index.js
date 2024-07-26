@@ -15,5 +15,3 @@ mongoose.connect(process.env.MONGO).then(() => {
 app.listen(3000, () => {
     console.log("Listening on port 3000");
 })
-
-//4y5RM4nR2KZCxJ94
