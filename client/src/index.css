@@ -10,3 +10,12 @@ body {
     font-weight: 400;
     font-style: normal;
 }
+
+.btn_google{
+    background-color: rgb(185, 28, 28);
+}
+
+
+.btn_google:hover{
+    background-color: rgb(185, 69, 69);
+}
