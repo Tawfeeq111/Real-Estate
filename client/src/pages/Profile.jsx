@@ -18,6 +18,8 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [flag, setFlag] = useState(false);
+  const [showListingError, setShowListingError] = useState(false);
+  const [userListings, setUserListings] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -111,6 +113,41 @@ export default function Profile() {
     }
   }
 
+  const handelShowListings = async () => {
+    try {
+      setShowListingError(false);
+      const data = await fetch(`/api/user/listings/${currentUser._id}`);
+      const listings = await data.json();
+      if(data.success === false){
+        setShowListingError(true);
+        return;
+      }
+      setUserListings(listings);
+      setShowListingError(false);
+    } catch (error) {
+      setShowListingError(true);
+    }
+  } 
+
+
+  const handelDeleteListing = async (id) => {
+    try {
+      const data = await fetch(`/api/listing/delete/${id}`, {
+        method: "DELETE"
+      });
+      const res = await data.json();
+      if(res.success === false){
+        console.log(res.message);
+        return;
+      }
+
+      await handelShowListings();      
+      console.log("Listing deleted sucessfully");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -173,6 +210,28 @@ export default function Profile() {
       </div>
       <p className='text-red-700'>{error ? error : ""}</p>
       <p className='mt-3 text-green-700'>{flag ? "User updated successfully!" : ""}</p>
+      <button onClick={handelShowListings} className='w-full text-green-700'>Show Listings</button>
+      { showListingError &&
+        <p className='text-red-700 mt-2'>Error showing listings</p>
+      }
+      { userListings && userListings.length > 0 &&
+        userListings.map((listing) => {
+          return <div key={listing._id} className='mt-5 border px-2 flex justify-between items-center rounded-lg gap-3'>
+            <Link to={`/listing/${listing._id}`}>
+              <img src={listing.imageUrls[0]} alt='listing cover' className='h-20 w-20 object-contain' />
+            </Link>
+            <Link className='flex-1 px-2 font-semibold text-gray-600 hover:underline truncate' to={`/listing/${listing._id}`}>
+              <p>{listing.name}</p>
+            </Link>
+            <div className="flex flex-col">
+              <button onClick={()=>handelDeleteListing(listing._id)} className='text-red-700'>Delete</button>
+              <Link to={`/update-listing/${listing._id}`} className='text-center'>
+                <button className='text-green-700 text-center'>Edit</button>
+              </Link>
+            </div>
+          </div>
+        })
+      }
     </div>
   )
 }

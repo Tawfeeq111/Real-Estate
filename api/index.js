@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser())
 
 mongoose.connect(process.env.MONGO).then(() => {
-    console.log("Connectrd to DB!!");
+    console.log("Connected to DB!!");
 }).catch((err) => {
     console.log("Error connecting to DB : ", err.message);
 })
