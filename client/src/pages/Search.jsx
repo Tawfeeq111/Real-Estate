@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ListingItem from '../../components/ListingItem';
+import ListingItem from './ListingItem.jsx';
 
 function Search() {
 
@@ -116,9 +116,9 @@ function Search() {
     console.log(listings)
 
     return (
-        <div className='flex flex-col md:flex-row md:min-h-screen'>
-            <div className='p-7 border-b-2 md:border-r-2 md:border-b-0'>
-                <form className='flex flex-col gap-7' onSubmit={handelSubmit}>
+        <div className='flex flex-col md:flex-row'>
+            <div className='p-7 border-b-2 md:border-r-2 md:border-b-0  md:min-h-screen'>
+                <form className='flex flex-col gap-8' onSubmit={handelSubmit}>
                     <div className="flex items-center gap-2">
                         <label className='whitespace-nowrap font-semibold'>Search Term:</label>
                         <input type='text'
@@ -185,7 +185,7 @@ function Search() {
                     <button className='bg-slate-700 rounded-lg text-white uppercase p-3 hover:opacity-95'>Search</button>
                 </form>
             </div>
-            <div>
+            <div className='flex-1'>
                 <h1 className='text-slate-700 font-semibold text-3xl mt-5 p-3 border-b-2'>
                     Listing Results:
                 </h1>
@@ -202,7 +202,6 @@ function Search() {
                         })
                     )}
                 </div>
-
             </div>
         </div>
     )
