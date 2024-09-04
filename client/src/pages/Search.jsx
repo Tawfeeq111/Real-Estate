@@ -18,11 +18,10 @@ function Search() {
 
     const [loading, setLoading] = useState(false);
     const [listings, setListings] = useState([]);
+    const [showMore, setShowMore] = useState(false);
 
 
     const handelChange = (e) => {
-
-
         if (e.target.id === 'all' || e.target.id === 'rent' || e.target.id === 'sale') {
             setSidebarData({
                 ...sidebarData,
@@ -88,9 +87,13 @@ function Search() {
 
         const fetchListings = async () => {
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
+            if(data.length > 8){
+                setShowMore(true);
+            } 
             setListings(data);
             setLoading(false);
         }
@@ -112,8 +115,22 @@ function Search() {
         navigate(`/search?${urlPrams.toString()}`)
 
     }
+    
 
-    console.log(listings)
+    const handelShowMore = async () => {
+        const startIdx = listings.length;
+        const urlPrams = new URLSearchParams(location.search);
+        urlPrams.set("startIdx", startIdx);
+        const searchQuery = urlPrams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if(data.length > 8){
+            setShowMore(true);
+        } else {
+            setShowMore(false);
+        }
+        setListings([...listings, ...data]);
+    }
 
     return (
         <div className='flex flex-col md:flex-row'>
@@ -200,6 +217,14 @@ function Search() {
                         listings.map((listing) => {
                             return <ListingItem key={listing._id} listing={listing}/>
                         })
+                    )}
+                    { showMore && (
+                        <button
+                            onClick={handelShowMore}
+                            className='text-green-700 mt-5 w-40 mx-auto hover:underline'
+                        >
+                            Show more
+                        </button>
                     )}
                 </div>
             </div>
